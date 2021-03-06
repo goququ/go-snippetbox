@@ -1,1 +1,1 @@
-web: go-snippetbox/cmd/web
+web: go build ./cmd/web && ./web
