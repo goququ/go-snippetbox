@@ -1,1 +1,1 @@
-web: go build ./cmd/web && ./web
+web: web
