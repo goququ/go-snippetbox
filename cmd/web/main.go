@@ -5,6 +5,8 @@ import (
 	"net/http"
 )
 
+const port = ""
+
 func main() {
 	mux := http.NewServeMux()
 
@@ -15,8 +17,8 @@ func main() {
 	fileServer := http.FileServer(http.Dir("./ui/static/"))
 	mux.Handle("/static/", http.StripPrefix("/static", fileServer))
 
-	log.Println("Server listening on port 4000")
-	err := http.ListenAndServe(":4000", mux)
+	log.Printf("Server listening on port %s", port)
+	err := http.ListenAndServe(port, mux)
 
 	if err != nil {
 		log.Fatal(err)
