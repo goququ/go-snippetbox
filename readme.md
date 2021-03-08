@@ -1,6 +1,6 @@
-run command
+dev run command
 
-`npx nodemon --exec go run "cmd/web/*.go" --signal SIGTERM`
+`npx nodemon -e go,tmpl --exec go run "cmd/web/*.go" --signal SIGTERM`
 
 or
 
