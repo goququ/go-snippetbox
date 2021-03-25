@@ -1,10 +1,10 @@
 package main
 
 import (
-	"log"
 	"net/http"
 	"os"
-	"strings"
+
+	"github.com/goququ/go-snippetbox/cmd/web/logger"
 )
 
 func main() {
@@ -16,7 +16,7 @@ func main() {
 		port = "8080"
 	}
 
-	fPort := strings.Join([]string{":", port}, "")
+	port = ":" + port
 
 	mux.HandleFunc("/", home)
 	mux.HandleFunc("/snippet", showSnippet)
@@ -25,10 +25,16 @@ func main() {
 	fileServer := http.FileServer(http.Dir("./ui/static/"))
 	mux.Handle("/static/", http.StripPrefix("/static", fileServer))
 
-	log.Printf("Server listening on port %s", fPort)
-	err := http.ListenAndServe(fPort, mux)
+	server := &http.Server{
+		Addr:     port,
+		ErrorLog: logger.ErrorLogger,
+		Handler:  mux,
+	}
+
+	logger.InfoLogger.Printf("Server listening on port %s", port)
+	err := server.ListenAndServe()
 
 	if err != nil {
-		log.Fatal(err)
+		logger.ErrorLogger.Fatal(err)
 	}
 }
