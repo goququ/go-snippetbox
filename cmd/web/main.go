@@ -3,8 +3,6 @@ package main
 import (
 	"net/http"
 	"os"
-
-	"github.com/goququ/go-snippetbox/cmd/web/logger"
 )
 
 func main() {
@@ -26,15 +24,15 @@ func main() {
 	mux.Handle("/static/", http.StripPrefix("/static", fileServer))
 
 	server := &http.Server{
-		Addr:     port,
-		ErrorLog: logger.ErrorLogger,
-		Handler:  mux,
+		Addr: port,
+		// ErrorLog: logger.ErrorLogger,
+		Handler: mux,
 	}
 
-	logger.InfoLogger.Printf("Server listening on port %s", port)
+	// logger.InfoLogger.Printf("Server listening on port %s", port)
 	err := server.ListenAndServe()
 
 	if err != nil {
-		logger.ErrorLogger.Fatal(err)
+		// logger.ErrorLogger.Fatal(err)
 	}
 }
