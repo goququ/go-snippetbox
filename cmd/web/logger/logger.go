@@ -5,12 +5,5 @@ import (
 	"os"
 )
 
-type AppLogger struct {
-	LogError *log.Logger
-	LogInfo  *log.Logger
-}
-
-var instance = AppLogger{
-	log.New(os.Stderr, "Error\t", log.Ldate|log.Ltime|log.Lshortfile),
-	log.New(os.Stderr, "Info\t", log.Ldate|log.Ltime),
-}
+var Error = log.New(os.Stderr, "ERROR\t", log.Ldate|log.Ltime|log.Lshortfile)
+var Info = log.New(os.Stderr, "INFO\t", log.Ldate|log.Ltime)
