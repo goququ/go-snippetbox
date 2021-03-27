@@ -1,25 +1,30 @@
 package main
 
 import (
+	"log"
 	"net/http"
-	"os"
 
 	"github.com/goququ/snippetbox/cmd/web/logger"
+	"github.com/goququ/snippetbox/cmd/web/utils"
 )
+
+type application struct {
+	errorLog *log.Logger
+	infoLog  *log.Logger
+}
 
 func main() {
 	mux := http.NewServeMux()
+	port := utils.GetPort()
 
-	port := os.Getenv("PORT")
-	if port == "" {
-		port = "8080"
+	app := &application{
+		errorLog: logger.Error,
+		infoLog:  logger.Info,
 	}
 
-	port = ":" + port
-
-	mux.HandleFunc("/", home)
-	mux.HandleFunc("/snippet", showSnippet)
-	mux.HandleFunc("/snippet/create", createSnippet)
+	mux.HandleFunc("/", app.home)
+	mux.HandleFunc("/snippet", app.showSnippet)
+	mux.HandleFunc("/snippet/create", app.createSnippet)
 
 	fileServer := http.FileServer(http.Dir("./ui/static/"))
 	mux.Handle("/static/", http.StripPrefix("/static", fileServer))
