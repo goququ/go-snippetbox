@@ -9,8 +9,8 @@ import (
 )
 
 type application struct {
-	errorLog *log.Logger
-	infoLog  *log.Logger
+	logError *log.Logger
+	logInfo  *log.Logger
 }
 
 func main() {
@@ -18,8 +18,8 @@ func main() {
 	port := utils.GetPort()
 
 	app := &application{
-		errorLog: logger.Error,
-		infoLog:  logger.Info,
+		logError: logger.Error,
+		logInfo:  logger.Info,
 	}
 
 	mux.HandleFunc("/", app.home)
