@@ -14,7 +14,6 @@ type application struct {
 }
 
 func main() {
-	mux := http.NewServeMux()
 	port := utils.GetPort()
 
 	app := &application{
@@ -22,23 +21,16 @@ func main() {
 		logInfo:  logger.Info,
 	}
 
-	mux.HandleFunc("/", app.home)
-	mux.HandleFunc("/snippet", app.showSnippet)
-	mux.HandleFunc("/snippet/create", app.createSnippet)
-
-	fileServer := http.FileServer(http.Dir("./ui/static/"))
-	mux.Handle("/static/", http.StripPrefix("/static", fileServer))
-
 	server := &http.Server{
 		Addr:     port,
-		ErrorLog: logger.Error,
-		Handler:  mux,
+		ErrorLog: app.logError,
+		Handler:  app.routes(),
 	}
 
-	logger.Info.Printf("Server listening on port %s", port)
+	app.logInfo.Printf("Server listening on port %s", port)
 	err := server.ListenAndServe()
 
 	if err != nil {
-		logger.Error.Fatal(err)
+		app.logError.Fatal(err)
 	}
 }
