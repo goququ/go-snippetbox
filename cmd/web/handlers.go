@@ -36,13 +36,17 @@ func (app *application) home(w http.ResponseWriter, r *http.Request) {
 
 func (app *application) showSnippet(w http.ResponseWriter, r *http.Request) {
 	id, err := strconv.Atoi(r.URL.Query().Get("id"))
-
 	if err != nil {
 		app.notFound(w)
 		return
 	}
 
-	fmt.Fprintf(w, "Snippet with id = %v", id)
+	snippet, err := app.snippets.Get(id)
+	if err != nil {
+		app.serverError(w, err)
+	}
+
+	fmt.Fprintf(w, "%v", snippet)
 }
 
 func (app *application) createSnippet(w http.ResponseWriter, r *http.Request) {
@@ -52,5 +56,16 @@ func (app *application) createSnippet(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	fmt.Fprint(w, []byte("Create new snippet"))
+	title := "O snail"
+	content := "O snail\nClimb Mount Fuji,\nBut slowly, slowly!\n\n– Kobayashi Issa"
+	expires := "7"
+
+	id, err := app.snippets.Insert(title, content, expires)
+	if err != nil {
+		app.serverError(w, err)
+		return
+	}
+	app.logInfo.Printf("New snippet created with id: %d\n", id)
+
+	http.Redirect(w, r, fmt.Sprintf("/snippet?id=%d", id), http.StatusSeeOther)
 }
