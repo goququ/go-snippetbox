@@ -1,11 +1,14 @@
 package main
 
 import (
+	"errors"
 	"fmt"
 	"html/template"
 	"net/http"
 	"path"
 	"strconv"
+
+	"github.com/goququ/snippetbox/pkg/models"
 )
 
 func (app *application) home(w http.ResponseWriter, r *http.Request) {
@@ -43,7 +46,12 @@ func (app *application) showSnippet(w http.ResponseWriter, r *http.Request) {
 
 	snippet, err := app.snippets.Get(id)
 	if err != nil {
+		if errors.Is(err, models.ErrorNoRecord) {
+			app.notFound(w)
+			return
+		}
 		app.serverError(w, err)
+		return
 	}
 
 	fmt.Fprintf(w, "%v", snippet)
