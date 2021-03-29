@@ -4,20 +4,20 @@ import (
 	"fmt"
 	"html/template"
 	"net/http"
+	"path"
 	"strconv"
 )
 
 func (app *application) home(w http.ResponseWriter, r *http.Request) {
-
 	if r.URL.Path != "/" {
 		http.NotFound(w, r)
 		return
 	}
 
 	files := []string{
-		"./ui/html/home.page.tmpl",
-		"./ui/html/base.layout.tmpl",
-		"./ui/html/footer.partial.tmpl",
+		path.Join(app.projectRoot, "./ui/html/home.page.tmpl"),
+		path.Join(app.projectRoot, "./ui/html/base.layout.tmpl"),
+		path.Join(app.projectRoot, "./ui/html/footer.partial.tmpl"),
 	}
 
 	ts, err := template.ParseFiles(files...)

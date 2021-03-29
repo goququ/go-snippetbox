@@ -11,9 +11,10 @@ import (
 )
 
 type application struct {
-	logError *log.Logger
-	logInfo  *log.Logger
-	snippets *psql.SnippetModel
+	logError    *log.Logger
+	logInfo     *log.Logger
+	snippets    *psql.SnippetModel
+	projectRoot string
 }
 
 func main() {
@@ -25,10 +26,16 @@ func main() {
 	}
 	defer myDB.Close()
 
+	projectRoot, err := utils.GetProjectRoot()
+	if err != nil {
+		logger.Error.Fatal(err)
+	}
+
 	app := &application{
-		logError: logger.Error,
-		logInfo:  logger.Info,
-		snippets: &psql.SnippetModel{DB: myDB},
+		logError:    logger.Error,
+		logInfo:     logger.Info,
+		snippets:    &psql.SnippetModel{DB: myDB},
+		projectRoot: projectRoot,
 	}
 
 	server := &http.Server{

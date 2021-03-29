@@ -4,4 +4,4 @@ dev run command
 
 or
 
-`go run cmd/web/*.go `
+`cd ./cmd/web && go run cmd/web/*.go`
