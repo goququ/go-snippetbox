@@ -3,13 +3,23 @@ package main
 import (
 	"html/template"
 	"path/filepath"
+	"time"
 
 	"github.com/goququ/snippetbox/pkg/models"
 )
 
 type templateData struct {
-	Snippet  *models.Snippet
-	Snippets []*models.Snippet
+	Snippet     *models.Snippet
+	Snippets    []*models.Snippet
+	CurrentYear int
+}
+
+func humanDate(t time.Time) string {
+	return t.Format("02 Jan 2006 at 15:04")
+}
+
+var functions = template.FuncMap{
+	"humanDate": humanDate,
 }
 
 func newTemplateCache(dir string) (map[string]*template.Template, error) { // Initialize a new map to act as the cache.
@@ -23,7 +33,7 @@ func newTemplateCache(dir string) (map[string]*template.Template, error) { // In
 	for _, page := range pages {
 		name := filepath.Base(page)
 
-		ts, err := template.ParseFiles(page)
+		ts, err := template.New(name).Funcs(functions).ParseFiles(page)
 		if err != nil {
 			return nil, err
 		}
