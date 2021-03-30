@@ -5,3 +5,9 @@ dev run command
 or
 
 `go run cmd/web/*.go`
+
+**DEV:**
+
+Create snippet
+
+`curl -iL -X POST https://go-sbox.herokuapp.com/snippet/create`
