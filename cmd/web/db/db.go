@@ -24,7 +24,6 @@ func Open() (*sql.DB, error) {
 		return nil, err
 	}
 
-	logger.Info.Println("Pinging database")
 	if err := db.Ping(); err != nil {
 		return nil, err
 	}

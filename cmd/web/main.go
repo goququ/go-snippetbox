@@ -1,8 +1,10 @@
 package main
 
 import (
+	"html/template"
 	"log"
 	"net/http"
+	"path"
 
 	"github.com/goququ/snippetbox/cmd/web/db"
 	"github.com/goququ/snippetbox/cmd/web/logger"
@@ -11,10 +13,11 @@ import (
 )
 
 type application struct {
-	logError    *log.Logger
-	logInfo     *log.Logger
-	snippets    *psql.SnippetModel
-	projectRoot string
+	logError      *log.Logger
+	logInfo       *log.Logger
+	snippets      *psql.SnippetModel
+	projectRoot   string
+	templateCache map[string]*template.Template
 }
 
 func main() {
@@ -31,11 +34,17 @@ func main() {
 		logger.Error.Fatal(err)
 	}
 
+	templateCache, err := newTemplateCache(path.Join(projectRoot, "./ui/html/"))
+	if err != nil {
+		logger.Error.Fatal(err)
+	}
+
 	app := &application{
-		logError:    logger.Error,
-		logInfo:     logger.Info,
-		snippets:    &psql.SnippetModel{DB: myDB},
-		projectRoot: projectRoot,
+		logError:      logger.Error,
+		logInfo:       logger.Info,
+		snippets:      &psql.SnippetModel{DB: myDB},
+		projectRoot:   projectRoot,
+		templateCache: templateCache,
 	}
 
 	server := &http.Server{
