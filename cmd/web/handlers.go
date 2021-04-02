@@ -85,5 +85,6 @@ func (app *application) createSnippet(w http.ResponseWriter, r *http.Request) {
 	}
 	app.logInfo.Printf("New snippet created with id: %d\n", id)
 
+	app.session.Put(r, "flash", "Snippet successfully created!")
 	http.Redirect(w, r, fmt.Sprintf("/snippet/%d", id), http.StatusSeeOther)
 }

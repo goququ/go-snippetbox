@@ -4,8 +4,11 @@ import (
 	"html/template"
 	"log"
 	"net/http"
+	"os"
 	"path"
+	"time"
 
+	"github.com/golangcollege/sessions"
 	"github.com/goququ/snippetbox/cmd/web/db"
 	"github.com/goququ/snippetbox/cmd/web/logger"
 	"github.com/goququ/snippetbox/cmd/web/utils"
@@ -15,6 +18,7 @@ import (
 type application struct {
 	logError      *log.Logger
 	logInfo       *log.Logger
+	session       *sessions.Session
 	snippets      *psql.SnippetModel
 	projectRoot   string
 	templateCache map[string]*template.Template
@@ -39,12 +43,17 @@ func main() {
 		logger.Error.Fatal(err)
 	}
 
+	secret := os.Getenv("SESSION_SECRET")
+	session := sessions.New([]byte(secret))
+	session.Lifetime = 12 * time.Hour
+
 	app := &application{
 		logError:      logger.Error,
 		logInfo:       logger.Info,
 		snippets:      &psql.SnippetModel{DB: myDB},
 		projectRoot:   projectRoot,
 		templateCache: templateCache,
+		session:       session,
 	}
 
 	server := &http.Server{
