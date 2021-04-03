@@ -20,6 +20,7 @@ type application struct {
 	logInfo       *log.Logger
 	session       *sessions.Session
 	snippets      *psql.SnippetModel
+	users         *psql.UserModel
 	projectRoot   string
 	templateCache map[string]*template.Template
 }
@@ -51,6 +52,7 @@ func main() {
 		logError:      logger.Error,
 		logInfo:       logger.Info,
 		snippets:      &psql.SnippetModel{DB: myDB},
+		users:         &psql.UserModel{DB: myDB},
 		projectRoot:   projectRoot,
 		templateCache: templateCache,
 		session:       session,
