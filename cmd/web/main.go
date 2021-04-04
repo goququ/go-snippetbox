@@ -16,6 +16,7 @@ import (
 )
 
 type application struct {
+	isProd        bool
 	logError      *log.Logger
 	logInfo       *log.Logger
 	session       *sessions.Session
@@ -47,6 +48,7 @@ func main() {
 	secret := os.Getenv("SESSION_SECRET")
 	session := sessions.New([]byte(secret))
 	session.Lifetime = 12 * time.Hour
+	session.SameSite = http.SameSiteStrictMode
 
 	app := &application{
 		logError:      logger.Error,
@@ -56,6 +58,7 @@ func main() {
 		projectRoot:   projectRoot,
 		templateCache: templateCache,
 		session:       session,
+		isProd:        isProd(),
 	}
 
 	server := &http.Server{

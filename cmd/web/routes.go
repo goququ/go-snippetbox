@@ -12,6 +12,11 @@ func (app *application) routes() http.Handler {
 	mux := pat.New()
 	standartMiddleware := alice.New(app.recoverPanic, app.logRequest, secureHeaders)
 	dynamicMiddleware := alice.New(app.session.Enable)
+
+	if app.isProd {
+		dynamicMiddleware.Append(noSurf)
+	}
+
 	mux.Get("/", dynamicMiddleware.ThenFunc(app.home))
 	mux.Get("/snippet/create", dynamicMiddleware.Append(app.requireAuthentication).ThenFunc(app.createSnippetForm))
 	mux.Post("/snippet/create", dynamicMiddleware.Append(app.requireAuthentication).ThenFunc(app.createSnippet))
