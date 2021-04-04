@@ -2,11 +2,15 @@
 
 dev run command
 
-`npx nodemon -e go,tmpl --exec go run "cmd/web/*.go" --signal SIGTERM`
+> `npx nodemon -e go,tmpl --exec go run "cmd/web/*.go" --signal SIGTERM`
 
 or
 
-`go run cmd/web/*.go`
+> `go run cmd/web/*.go`
+
+## Tests
+
+> `go test -v ./cmd/web`
 
 ---
 
