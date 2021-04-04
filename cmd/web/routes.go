@@ -11,7 +11,7 @@ import (
 func (app *application) routes() http.Handler {
 	mux := pat.New()
 	standartMiddleware := alice.New(app.recoverPanic, app.logRequest, secureHeaders)
-	dynamicMiddleware := alice.New(app.session.Enable)
+	dynamicMiddleware := alice.New(app.session.Enable, app.authenticate)
 
 	if app.isProd {
 		dynamicMiddleware.Append(noSurf)

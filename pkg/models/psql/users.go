@@ -36,6 +36,7 @@ func (m *UserModel) Authenticate(email, password string) (int, error) {
 	stmt := "SELECT id, hashed_password FROM users WHERE email = $1 AND active = TRUE"
 
 	row := m.DB.QueryRow(stmt, email)
+
 	if err := row.Scan(&ID, &hashedPassword); err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
 			return 0, models.ErrInvalidCredentials
@@ -56,5 +57,16 @@ func (m *UserModel) Authenticate(email, password string) (int, error) {
 }
 
 func (m *UserModel) Get(id int) (*models.User, error) {
-	return nil, nil
+	u := &models.User{}
+	stmt := `SELECT id, name, email, created, active FROM users WHERE id = $1`
+
+	if err := m.DB.QueryRow(stmt, id).Scan(&u.ID, &u.Name, &u.Email, &u.Created, &u.Active); err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return nil, models.ErrorNoRecord
+		} else {
+			return nil, err
+		}
+	}
+
+	return u, nil
 }

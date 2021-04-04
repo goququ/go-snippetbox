@@ -26,6 +26,10 @@ type application struct {
 	templateCache map[string]*template.Template
 }
 
+type contextKey string
+
+const contextKeyIsAuthenticated = contextKey("isAuthenticated")
+
 func main() {
 	port := utils.GetPort()
 

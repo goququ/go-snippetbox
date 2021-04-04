@@ -12,7 +12,11 @@ import (
 )
 
 func (app *application) isAuthenticated(r *http.Request) bool {
-	return app.session.Exists(r, "authenticatedUserID")
+	hasAuth, ok := r.Context().Value(contextKeyIsAuthenticated).(bool)
+	if !ok {
+		return false
+	}
+	return hasAuth
 }
 
 func (app *application) serverError(w http.ResponseWriter, err error) {
